@@ -4,6 +4,18 @@ A fast-paced RTS game with minimal micro-management, and a hexagonal grid for pl
 ## About
 This repository contains code for both the server and client. Currently this is a prototype to figure out the most fun game design.
 
+### Libraries/frameworks
+The client is written in JavaScript, and the server is written in [Go](https://golang.org/).
+
+Client libraries:
+* [Pixi.js](http://www.pixijs.com/)
+* [CES.js](https://github.com/qiao/ces.js)
+* [Howler.js](https://github.com/goldfire/howler.js/)
+* [SockJS](https://github.com/sockjs/sockjs-client)
+
+Server libraries:
+* [Gorilla websocket](http://www.gorillatoolkit.org/pkg/websocket)
+
 ## Gameplay Overview
 There are already detailed design documents, which I may decide to share later. For now, here's an overview of what is planned.
 
