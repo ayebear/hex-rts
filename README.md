@@ -12,6 +12,7 @@ Client libraries:
 * [CES.js](https://github.com/qiao/ces.js)
 * [Howler.js](https://github.com/goldfire/howler.js/)
 * [SockJS](https://github.com/sockjs/sockjs-client)
+* [Mousetrap](https://craig.is/killing/mice)
 
 Server libraries:
 * [Gorilla websocket](http://www.gorillatoolkit.org/pkg/websocket)
