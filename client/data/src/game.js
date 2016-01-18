@@ -4,6 +4,9 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 var lastTime = Date.now();
 
+
+
+// Used for panning
 var arrowMappings = {
 	'37': {x: 1, y: 0},
 	'39': {x: -1, y: 0},
@@ -11,8 +14,11 @@ var arrowMappings = {
 	'40': {x: 0, y: -1}
 };
 
+// Should move this into some kind of a library
 var watchKeys = ['left', 'right', 'up', 'down', 'i', 'o'];
 var keyDown = {};
+
+
 
 PIXI.loader
 	.add('empty', 'data/images/empty.png')
@@ -27,26 +33,50 @@ function start() {
 function setup() {
 	renderer.backgroundColor = 0x000000;
 
-	// Setup hex map
-	var mapSize = 128;
-	for (var y = 0; y < mapSize; ++y) {
-		for (var x = 0; x < mapSize; ++x) {
-			var sprite = new PIXI.Sprite(PIXI.loader.resources['empty'].texture);
-			sprite.position.x = x * 98;
-			var offset = 0;
-			if (x % 2 == 1) {
-				offset = 55;
-			}
-			sprite.position.y = y * 112 + offset;
-			stage.addChild(sprite);
-		}
-	}
+	/*
+	This will create a bunch of entities with sprites to display the hex tiles.
+	They can be accessed by entity ID, or by colliding with the sprite to get the sprite/entity ID.
+	*/
+	generateHexMap(12);
 
 	return {};
 }
 
+function generateHexMap(mapSize) {
+	// Setup a hex map in the shape of a large hex
+	var pos = {x: 0, y: 0};
+	var count = mapSize;
+	for (var half = 1; half >= -1; half -= 2) {
+		var rows = mapSize;
+		if (half == 1) {
+			--rows;
+		}
+		for (var row = 0; row < rows; ++row) {
+			var prevPos = {x: pos.x, y: pos.y};
+			for (var col = 0; col < count; ++col) {
+				pos.x += 98;
+				pos.y -= 55;
+
+				var sprite = new PIXI.Sprite(PIXI.loader.resources['empty'].texture);
+				sprite.position.x = pos.x;
+				sprite.position.y = pos.y;
+				stage.addChild(sprite);
+			}
+
+			if (half == -1) {
+				pos.x = prevPos.x + 98;
+				pos.y = prevPos.y + 55;
+			} else {
+				pos.x = 0;
+				pos.y = prevPos.y + 112;
+			}
+			count += half;
+		}
+	}
+}
+
 function mapZoom(stage, gameSize, offset) {
-	console.log(stage);
+	/*console.log(stage);
 
 	var halfSize = {
 		x: gameSize.width / 2.0,
@@ -57,15 +87,15 @@ function mapZoom(stage, gameSize, offset) {
 	var center = {
 		x: stage.x - halfSize.x,
 		y: stage.y - halfSize.y
-	};
+	};*/
 
 	// Scale the container
 	stage.scale.x *= offset;
 	stage.scale.y *= offset;
 
 	// Move to previous center
-	stage.x = center.x + halfSize.x;
-	stage.y = center.y + halfSize.y;
+	/*stage.x = center.x + halfSize.x;
+	stage.y = center.y + halfSize.y;*/
 }
 
 function update(state, dt) {
@@ -106,9 +136,6 @@ function render(state) {
 
 	requestAnimationFrame(render);
 }
-
-
-
 
 
 
