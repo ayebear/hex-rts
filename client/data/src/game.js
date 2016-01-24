@@ -4,21 +4,8 @@ document.body.appendChild(renderer.view);
 var stage = new PIXI.Container();
 var lastTime = Date.now();
 
-
-
-// Used for panning
-var arrowMappings = {
-	'37': {x: 1, y: 0},
-	'39': {x: -1, y: 0},
-	'38': {x: 0, y: 1},
-	'40': {x: 0, y: -1}
-};
-
-// Should move this into some kind of a library
-var watchKeys = ['left', 'right', 'up', 'down', 'i', 'o'];
-var keyDown = {};
-
-
+// Current game state
+var state = gameState;
 
 PIXI.loader
 	.add('empty', 'data/images/empty.png')
@@ -26,8 +13,8 @@ PIXI.loader
 	.load(start);
 
 function start() {
-	var state = setup();
-	render(state);
+	setup();
+	render();
 }
 
 function setup() {
@@ -38,14 +25,20 @@ function setup() {
 	They can be accessed by entity ID, or by colliding with the sprite to get the sprite/entity ID.
 	*/
 	generateHexMap(12);
-
-	return {};
 }
+
+/*
+function hex_to_pixel(hex):
+    x = size * 3/2 * hex.q
+    y = size * sqrt(3) * (hex.r + hex.q/2)
+    return Point(x, y)
+*/
 
 function generateHexMap(mapSize) {
 	// Setup a hex map in the shape of a large hex
 	var pos = {x: 0, y: 0};
 	var count = mapSize;
+	var placement = {x: 192, y: 111};
 	for (var half = 1; half >= -1; half -= 2) {
 		var rows = mapSize;
 		if (half == 1) {
@@ -54,9 +47,10 @@ function generateHexMap(mapSize) {
 		for (var row = 0; row < rows; ++row) {
 			var prevPos = {x: pos.x, y: pos.y};
 			for (var col = 0; col < count; ++col) {
-				pos.x += 98;
-				pos.y -= 55;
+				pos.x += placement.x;
+				pos.y -= placement.y;
 
+				// Create a hex tile sprite
 				var sprite = new PIXI.Sprite(PIXI.loader.resources['empty'].texture);
 				sprite.position.x = pos.x;
 				sprite.position.y = pos.y;
@@ -64,11 +58,11 @@ function generateHexMap(mapSize) {
 			}
 
 			if (half == -1) {
-				pos.x = prevPos.x + 98;
-				pos.y = prevPos.y + 55;
+				pos.x = prevPos.x + placement.x;
+				pos.y = prevPos.y + placement.y;
 			} else {
 				pos.x = 0;
-				pos.y = prevPos.y + 112;
+				pos.y = prevPos.y + (placement.y * 2);
 			}
 			count += half;
 		}
@@ -98,7 +92,18 @@ function mapZoom(stage, gameSize, offset) {
 	stage.y = center.y + halfSize.y;*/
 }
 
-function update(state, dt) {
+
+
+
+// Used for panning
+var arrowMappings = {
+	'37': {x: 1, y: 0},
+	'39': {x: -1, y: 0},
+	'38': {x: 0, y: 1},
+	'40': {x: 0, y: -1}
+};
+
+function gameState(dt) {
 
 	// Camera panning
 	for (var arrowKey in arrowMappings) {
@@ -124,27 +129,15 @@ function update(state, dt) {
 
 }
 
-function render(state) {
+function render() {
 	// Calculate delta-time
 	var currentTime = Date.now();
 	var dt = (currentTime - lastTime) / 1000.0;
 	lastTime = currentTime;
 
-	update(state, dt);
+	state(dt);
 
 	renderer.render(stage);
 
 	requestAnimationFrame(render);
 }
-
-
-
-// Controls
-
-Mousetrap.bind(watchKeys, function(e) {
-	keyDown[e.keyCode] = true;
-}, 'keydown');
-
-Mousetrap.bind(watchKeys, function(e) {
-	keyDown[e.keyCode] = false;
-}, 'keyup');
