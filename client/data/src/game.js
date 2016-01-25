@@ -24,47 +24,47 @@ function setup() {
 	This will create a bunch of entities with sprites to display the hex tiles.
 	They can be accessed by entity ID, or by colliding with the sprite to get the sprite/entity ID.
 	*/
-	generateHexMap(12);
+	generateHexMap(4);
 }
 
-/*
-function hex_to_pixel(hex):
-    x = size * 3/2 * hex.q
-    y = size * sqrt(3) * (hex.r + hex.q/2)
-    return Point(x, y)
-*/
+function hexToPixel(pos, size) {
+	var x = size * 1.5 * pos.x;
+	var y = size * Math.sqrt(3) * (pos.y + (pos.x / 2));
+	return {x: x, y: y};
+}
+
+function pixelToHex(pos, size) {
+	var x = (pos.x * (2 / 3)) / size
+	var y = ((-pos.x / 3) + ((Math.sqrt(3) / 3) * pos.y)) / size
+	return {x: Math.floor(x), y: Math.floor(y)};
+}
+
+function createHex(pos) {
+	// Create a hex tile sprite
+	var sprite = new PIXI.Sprite(PIXI.loader.resources['empty'].texture);
+	sprite.position.x = pos.x;
+	sprite.position.y = pos.y;
+	stage.addChild(sprite);
+}
 
 function generateHexMap(mapSize) {
+	// Size of an edge of a hex tile
+	var hexSize = 128;
+
 	// Setup a hex map in the shape of a large hex
-	var pos = {x: 0, y: 0};
-	var count = mapSize;
-	var placement = {x: 192, y: 111};
-	for (var half = 1; half >= -1; half -= 2) {
-		var rows = mapSize;
-		if (half == 1) {
-			--rows;
+	var mapEnd = mapSize - 1;
+	var yMin = 0;
+	var yMax = mapEnd;
+	for (var x = -mapEnd; x <= mapEnd; ++x) {
+		for (var y = yMin; y <= yMax; ++y) {
+			// Calculate coordinates and add tile
+			var pos = hexToPixel({x: x, y: y}, hexSize);
+			createHex(pos);
 		}
-		for (var row = 0; row < rows; ++row) {
-			var prevPos = {x: pos.x, y: pos.y};
-			for (var col = 0; col < count; ++col) {
-				pos.x += placement.x;
-				pos.y -= placement.y;
-
-				// Create a hex tile sprite
-				var sprite = new PIXI.Sprite(PIXI.loader.resources['empty'].texture);
-				sprite.position.x = pos.x;
-				sprite.position.y = pos.y;
-				stage.addChild(sprite);
-			}
-
-			if (half == -1) {
-				pos.x = prevPos.x + placement.x;
-				pos.y = prevPos.y + placement.y;
-			} else {
-				pos.x = 0;
-				pos.y = prevPos.y + (placement.y * 2);
-			}
-			count += half;
+		if (x < 0) {
+			--yMin;
+		} else {
+			--yMax;
 		}
 	}
 }
