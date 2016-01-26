@@ -41,23 +41,12 @@ function setup() {
 	stage.mousemove = handleMouseMove;
 }
 
-function hexToPixel(pos, size) {
-	var x = size * 1.5 * pos.x;
-	var y = size * Math.sqrt(3) * (pos.y + (pos.x / 2));
-	return {x: x, y: y};
-}
-
-function pixelToHex(pos, size) {
-	var x = (pos.x * (2 / 3)) / size;
-	var y = ((-pos.x / 3) + ((Math.sqrt(3) / 3) * pos.y)) / size;
-	return {x: Math.floor(x), y: Math.floor(y)};
-}
-
 function createHex(pos, textureName) {
 	// Create a hex tile sprite
 	var sprite = new PIXI.Sprite(textures[textureName]);
 	sprite.position.x = pos.x;
 	sprite.position.y = pos.y;
+	sprite.anchor.set(0.5, 0.5);
 	stage.addChild(sprite);
 }
 
@@ -177,10 +166,7 @@ function updateMouseGamePos() {
 	mouseGamePos.x = (mousePos.x - stage.x) / stage.scale.x;
 	mouseGamePos.y = (mousePos.y - stage.y) / stage.scale.y;
 
-	// var pos = hexToPixel(pixelToHex(mousePos, hexSize), hexSize);
-	// selectedTile.position.x = pos.x;
-	// selectedTile.position.y = pos.y;
-
-	selectedTile.position.x = mouseGamePos.x;
-	selectedTile.position.y = mouseGamePos.y;
+	var pos = hexToPixel(pixelToHex(mouseGamePos, hexSize), hexSize);
+	selectedTile.position.x = pos.x;
+	selectedTile.position.y = pos.y;
 }
