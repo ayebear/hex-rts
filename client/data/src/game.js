@@ -9,11 +9,10 @@ var mousePos = {x: 0, y: 0};
 var mouseGamePos = {x: 0, y: 0};
 var selectedTile;
 
-// Size of an edge of a hex tile
-var hexSize = 128;
-
 // Current game state
 var state = gameState;
+
+var hexMap = new HexMap(stage, 128);
 
 PIXI.loader
 	.add('structure_sheet', 'data/images/structure_sheet.json')
@@ -31,7 +30,7 @@ function setup() {
 	This will create a bunch of entities with sprites to display the hex tiles.
 	They can be accessed by entity ID, or by colliding with the sprite to get the sprite/entity ID.
 	*/
-	generateHexMap(6);
+	hexMap.createBackground(6);
 
 	selectedTile = new PIXI.Sprite(textures['selection.png']);
 	selectedTile.anchor.set(0.5, 0.5);
@@ -40,37 +39,6 @@ function setup() {
 	stage.interactive = true;
 	stage.mousemove = handleMouseMove;
 	stage.mousedown = handleMouseDown;
-}
-
-function createHex(pos, textureName) {
-	// Create a hex tile sprite
-	var sprite = new PIXI.Sprite(textures[textureName]);
-	sprite.position.x = pos.x;
-	sprite.position.y = pos.y;
-	sprite.anchor.set(0.5, 0.5);
-	stage.addChild(sprite);
-}
-
-function generateHexMap(mapSize) {
-	// Setup a hex map in the shape of a large hex
-	var mapEnd = mapSize - 1;
-	var yMin = 0;
-	var yMax = mapEnd;
-	for (var x = -mapEnd; x <= mapEnd; ++x) {
-		for (var y = yMin; y <= yMax; ++y) {
-			// Calculate coordinates and add tile
-			var pos = hexToPixel({x: x, y: y}, hexSize);
-			createHex(pos, 'empty.png');
-			if (x == 0 && y == 0) {
-				createHex(pos, 'structure.png');
-			}
-		}
-		if (x < 0) {
-			--yMin;
-		} else {
-			--yMax;
-		}
-	}
 }
 
 function mapZoom(stage, gameSize, offset) {
@@ -173,7 +141,7 @@ function handleMouseMove(event) {
 function updateMouseGamePos() {
 	mouseGamePos = windowToGameCoords(mousePos);
 
-	var pos = hexToPixel(pixelToHex(mouseGamePos, hexSize), hexSize);
+	var pos = hexToPixel(pixelToHex(mouseGamePos, hexMap.tileSize), hexMap.tileSize);
 	selectedTile.position.x = pos.x;
 	selectedTile.position.y = pos.y;
 }
@@ -184,9 +152,9 @@ function handleMouseDown(event) {
 		y: event.data.originalEvent.clientY
 	};
 	var gamePos = windowToGameCoords(pos);
-	var hexPos = pixelToHex(mouseGamePos, hexSize);
+	var hexPos = pixelToHex(mouseGamePos, hexMap.tileSize);
 
 	console.log(getKey(hexPos));
 
-
+	hexMap.createTile(hexPos, 'structure.png');
 }
