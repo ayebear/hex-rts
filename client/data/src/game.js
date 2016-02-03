@@ -9,11 +9,12 @@ var mousePos = {x: 0, y: 0};
 var mouseGamePos = {x: 0, y: 0};
 var selectedTile;
 var panSpeed = 600;
+var tileSize = 128;
 
 // Current game state
 var state = gameState;
 
-var hexMap = new HexMap(stage, 128);
+var hexMap = new HexMap(stage, tileSize);
 
 PIXI.loader
 	.add('structure_sheet', 'data/images/structure_sheet.json')
@@ -40,6 +41,16 @@ function setup() {
 	stage.interactive = true;
 	stage.mousemove = handleMouseMove;
 	stage.mousedown = handleMouseDown;
+
+	// Center the camera
+	// Note: In the future this will center on the player, which will be the starting structure position
+	centerStage(stage, {x: 0, y: 0});
+}
+
+function centerStage(stage, pos) {
+	var tilePos = hexToPixel(pos, tileSize);
+	stage.x = tilePos.x + (gameSize.width / 2);
+	stage.y = tilePos.y + (gameSize.height / 2);
 }
 
 function mapZoom(stage, gameSize, offset) {
@@ -158,5 +169,5 @@ function handleMouseDown(event) {
 	hexPos.z = 10;
 	hexMap.set(hexPos, 'structure.png');
 
-	console.log(hexMap.tiles);
+	console.log(hexPos);
 }
