@@ -8,6 +8,7 @@ var lastTime = Date.now();
 var mousePos = {x: 0, y: 0};
 var mouseGamePos = {x: 0, y: 0};
 var selectedTile;
+var panSpeed = 600;
 
 // Current game state
 var state = gameState;
@@ -87,7 +88,7 @@ function gameState(dt) {
 			// Pan based on which key(s) were pressed
 			var delta = arrowMappings[arrowKey];
 			for (var key in delta) {
-				stage[key] += delta[key] * dt * 600;
+				stage[key] += delta[key] * dt * panSpeed;
 			}
 
 			updateMouseGamePos();
@@ -154,7 +155,8 @@ function handleMouseDown(event) {
 	var gamePos = windowToGameCoords(pos);
 	var hexPos = pixelToHex(mouseGamePos, hexMap.tileSize);
 
-	console.log(getKey(hexPos));
+	hexPos.z = 10;
+	hexMap.set(hexPos, 'structure.png');
 
-	hexMap.createTile(hexPos, 'structure.png');
+	console.log(hexMap.tiles);
 }

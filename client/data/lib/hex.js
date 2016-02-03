@@ -62,7 +62,3 @@ function cubeRound(hexPos) {
 function hexRound(pos) {
 	return cubeToHex(cubeRound(hexToCube(pos)));
 }
-
-function getKey(pos) {
-	return pos.x.toString() + ',' + pos.y.toString();
-}
