@@ -163,6 +163,18 @@ function handleMouseDown(event) {
 		x: event.data.originalEvent.clientX,
 		y: event.data.originalEvent.clientY
 	};
+	handleMouseClick(pos);
+}
+
+function handleContextMenu(event) {
+	var pos = {
+		x: event.clientX,
+		y: event.clientY
+	};
+	handleMouseClick(pos);
+}
+
+function handleMouseClick(pos) {
 	var gamePos = windowToGameCoords(pos);
 	var hexPos = pixelToHex(mouseGamePos, hexMap.tileSize);
 
@@ -171,3 +183,4 @@ function handleMouseDown(event) {
 
 	console.log(hexPos);
 }
+
