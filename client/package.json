@@ -1,0 +1,22 @@
+{
+  "name": "hex-rts",
+  "version": "0.0.1",
+  "description": "Hex RTS game",
+  "main": "main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ayebear/hex-rts.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "browserify": "^13.0.0",
+    "howler": "^1.1.29",
+    "kran": "0.0.2",
+    "mousetrap": "^1.5.3",
+    "pixi.js": "^3.0.9"
+  }
+}
