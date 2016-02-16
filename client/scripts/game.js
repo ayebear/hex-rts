@@ -1,3 +1,8 @@
+var PIXI = require("pixi.js");
+var HexMap = require("./hexmap.js");
+var Hex = require("./hex.js");
+var KB = require("./kb.js");
+
 var gameSize = {width: window.innerWidth - 4, height: window.innerHeight - 4};
 var renderer = PIXI.autoDetectRenderer(gameSize.width, gameSize.height, {antialias: true});
 document.body.appendChild(renderer.view);
@@ -48,7 +53,7 @@ function setup() {
 }
 
 function centerStage(stage, pos) {
-	var tilePos = hexToPixel(pos, tileSize);
+	var tilePos = Hex.hexToPixel(pos, tileSize);
 	stage.x = tilePos.x + (gameSize.width / 2);
 	stage.y = tilePos.y + (gameSize.height / 2);
 }
@@ -95,7 +100,7 @@ function gameState(dt) {
 
 	// Camera panning
 	for (var arrowKey in arrowMappings) {
-		if (keyDown[arrowKey]) {
+		if (KB.keyDown[arrowKey]) {
 			// Pan based on which key(s) were pressed
 			var delta = arrowMappings[arrowKey];
 			for (var key in delta) {
@@ -107,12 +112,12 @@ function gameState(dt) {
 	}
 
 	// Camera zooming
-	if (keyDown['73']) {
+	if (KB.keyDown['73']) {
 		// Zoom in
 		var offset = 1.0 + dt;
 		mapZoom(stage, gameSize, offset);
 	}
-	if (keyDown['79']) {
+	if (KB.keyDown['79']) {
 		// Zoom out
 		var offset = 1.0 / (1.0 + dt);
 		mapZoom(stage, gameSize, offset);
@@ -153,7 +158,7 @@ function handleMouseMove(event) {
 function updateMouseGamePos() {
 	mouseGamePos = windowToGameCoords(mousePos);
 
-	var pos = hexToPixel(pixelToHex(mouseGamePos, hexMap.tileSize), hexMap.tileSize);
+	var pos = Hex.hexToPixel(Hex.pixelToHex(mouseGamePos, hexMap.tileSize), hexMap.tileSize);
 	selectedTile.position.x = pos.x;
 	selectedTile.position.y = pos.y;
 }
@@ -176,7 +181,7 @@ function handleContextMenu(event) {
 
 function handleMouseClick(pos) {
 	var gamePos = windowToGameCoords(pos);
-	var hexPos = pixelToHex(mouseGamePos, hexMap.tileSize);
+	var hexPos = Hex.pixelToHex(mouseGamePos, hexMap.tileSize);
 
 	hexPos.z = 10;
 	hexMap.set(hexPos, 'structure.png');

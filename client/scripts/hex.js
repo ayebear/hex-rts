@@ -3,6 +3,16 @@ Source code derived from:
 http://www.redblobgames.com/grids/hexagons/
 */
 
+// TODO: Make this a class or something
+module.exports = {
+	hexToPixel: hexToPixel,
+	pixelToHex: pixelToHex,
+	cubeToHex: cubeToHex,
+	hexToCube: hexToCube,
+	cubeRound: cubeRound,
+	hexRound: hexRound
+}
+
 // Convert axial hex coordinates to pixel coordinates
 function hexToPixel(pos, size) {
 	var x = size * 1.5 * pos.x;

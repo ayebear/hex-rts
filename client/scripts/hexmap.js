@@ -1,3 +1,7 @@
+var Hex = require("./hex.js");
+
+module.exports = HexMap;
+
 /*
 Creates a hexagon tile-map using pixi.js sprites.
 */
@@ -37,7 +41,7 @@ HexMap.prototype.createBackground = function(mapSize) {
 
 // Private method to add a new tile
 HexMap.prototype.create = function(pos, key, textureName) {
-	var tilePos = hexToPixel(pos, this.tileSize);
+	var tilePos = Hex.hexToPixel(pos, this.tileSize);
 
 	// Create a hex tile sprite
 	var sprite = new PIXI.Sprite(this.getTexture(textureName));
